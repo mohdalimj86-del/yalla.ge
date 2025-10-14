@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { signIn } from 'next-auth/react';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -23,38 +24,14 @@ const LoginPage: React.FC = () => {
         login(user, isNew || !welcomeShown);
     };
 
-    const handleGoogleLogin = useGoogleLogin({
-        onSuccess: async (tokenResponse) => {
-            setError('');
-            try {
-                const googleUserInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                    headers: { 'Authorization': `Bearer ${tokenResponse.access_token}` }
-                });
-                if (!googleUserInfoResponse.ok) {
-                    throw new Error('Failed to fetch user info from Google');
-                }
-                const googleUser = await googleUserInfoResponse.json();
-                
-                const savedAvatar = localStorage.getItem(`avatar_${googleUser.sub}`);
-                const user: User = {
-                    id: googleUser.sub,
-                    name: googleUser.name,
-                    email: googleUser.email,
-                    picture: googleUser.picture,
-                    avatarUrl: savedAvatar || undefined,
-                    verified: true,
-                };
-                processLogin(user);
-            } catch (err) {
-                console.error("Google login failed", err);
-                setError('Google login failed. Please try again.');
-            }
-        },
-        onError: () => {
-            console.error('Google login failed');
-            setError('Google login failed. Please try again.');
-        },
-    });
+   const handleGoogleSignIn = async () => {
+  try {
+    await signIn('google', { callbackUrl: '/profile' });
+  } catch (error) {
+    console.error('Google login failed:', error);
+    setError('Google login failed. Please try again.');
+  }
+};
 
     return (
         <div className="flex items-center justify-center py-12">
@@ -70,7 +47,7 @@ const LoginPage: React.FC = () => {
                 
                 <div>
                     <button
-                        onClick={() => handleGoogleLogin()}
+                        onClick={handleGoogleSignIn}
                         className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-colors"
                     >
                         <GoogleIcon className="h-6 w-6" />
