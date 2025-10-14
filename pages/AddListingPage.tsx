@@ -23,12 +23,20 @@ const AddListingPage: React.FC = () => {
         return <Navigate to="/login" replace />;
     }
 
-    const isValidCategory = category === 'accommodation' || category === 'marketplace';
+    const isValidCategory = category === 'accommodation' || category === 'marketplace' || category === 'explore';
     if (!isValidCategory) {
         return <Navigate to="/404" replace />;
     }
-
-    const listingCategory = category === 'accommodation' ? ListingCategory.Accommodation : ListingCategory.Marketplace;
+    
+    const getListingCategory = () => {
+        switch (category) {
+            case 'accommodation': return ListingCategory.Accommodation;
+            case 'marketplace': return ListingCategory.Marketplace;
+            case 'explore': return ListingCategory.Explore;
+            default: return null;
+        }
+    };
+    const listingCategory = getListingCategory()!;
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -43,7 +51,7 @@ const AddListingPage: React.FC = () => {
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        if (!title || !description || !price || !location || !image) {
+        if (!title || !description || (listingCategory !== ListingCategory.Explore && !price) || !location || !image) {
             setError(t('add_listing.error.all_fields'));
             return;
         }
@@ -52,20 +60,27 @@ const AddListingPage: React.FC = () => {
             category: listingCategory,
             title,
             description,
-            price,
+            price: listingCategory === ListingCategory.Explore ? undefined : price,
             location,
             imageUrl: image,
+            status: listingCategory === ListingCategory.Explore ? 'pending' : 'approved',
         }, user!.name);
 
         navigate(`/${category}`);
     };
+    
+    const getPageTitle = () => {
+        switch(listingCategory) {
+            case ListingCategory.Accommodation: return t('add_listing.title.accommodation');
+            case ListingCategory.Marketplace: return t('add_listing.title.marketplace');
+            case ListingCategory.Explore: return t('add_listing.title.explore');
+        }
+    }
 
     return (
         <div className="max-w-2xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-                {listingCategory === ListingCategory.Accommodation 
-                    ? t('add_listing.title.accommodation') 
-                    : t('add_listing.title.marketplace')}
+                {getPageTitle()}
             </h1>
             <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -77,10 +92,12 @@ const AddListingPage: React.FC = () => {
                         <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('add_listing.field.description')}</label>
                         <textarea id="description" value={description} onChange={e => setDescription(e.target.value)} rows={4} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />
                     </div>
-                     <div>
-                        <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('add_listing.field.price')}</label>
-                        <input type="text" id="price" value={price} onChange={e => setPrice(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />
-                    </div>
+                    {listingCategory !== ListingCategory.Explore && (
+                        <div>
+                            <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('add_listing.field.price')}</label>
+                            <input type="text" id="price" value={price} onChange={e => setPrice(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />
+                        </div>
+                    )}
                      <div>
                         <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('add_listing.field.location')}</label>
                         <input type="text" id="location" value={location} onChange={e => setLocation(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required />

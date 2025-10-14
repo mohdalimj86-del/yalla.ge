@@ -23,6 +23,7 @@ export interface Listing {
   location: string;
   author: string;
   rating?: number;
+  status?: 'approved' | 'pending';
 }
 
 export interface User {

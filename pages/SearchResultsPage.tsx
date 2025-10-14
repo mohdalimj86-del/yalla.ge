@@ -18,10 +18,11 @@ const SearchResultsPage: React.FC = () => {
     const lowercasedQuery = query.trim().toLowerCase();
     return listings.filter(
       (listing) =>
-        listing.title.toLowerCase().includes(lowercasedQuery) ||
+        listing.status !== 'pending' &&
+        (listing.title.toLowerCase().includes(lowercasedQuery) ||
         listing.description.toLowerCase().includes(lowercasedQuery) ||
         listing.location.toLowerCase().includes(lowercasedQuery) ||
-        listing.category.toLowerCase().includes(lowercasedQuery)
+        listing.category.toLowerCase().includes(lowercasedQuery))
     );
   }, [listings, query]);
 

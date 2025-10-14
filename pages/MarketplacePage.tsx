@@ -15,6 +15,7 @@ const MarketplacePage: React.FC = () => {
   const marketplaceListings = useMemo(() => 
     listings.filter(listing => 
       listing.category === ListingCategory.Marketplace &&
+      listing.status !== 'pending' &&
       (listing.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
        listing.description.toLowerCase().includes(searchTerm.toLowerCase()))
     ), [listings, searchTerm]
