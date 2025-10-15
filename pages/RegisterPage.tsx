@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useGoogleLogin, TokenResponse } from '@react-oauth/google';
 import { useNavigate, Link } from 'react-router-dom';
@@ -6,6 +5,10 @@ import { useAuth } from '../hooks/useAuth';
 import { useLocalization } from '../hooks/useLocalization';
 import { User, Badge } from '../types';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import FacebookLoginButton from '../components/FacebookLoginButton';
+
+// Declare FB SDK global object
+declare const FB: any;
 
 const RegisterPage: React.FC = () => {
     const { register, isAuthenticated, login } = useAuth();
@@ -70,6 +73,53 @@ const RegisterPage: React.FC = () => {
              setLoading(false);
         },
     });
+
+    const handleFacebookRegister = () => {
+        if (loading) return;
+        setLoading(true);
+        setError('');
+
+        if (typeof FB === 'undefined') {
+            setError('Facebook SDK is loading. Please try again in a moment.');
+            setLoading(false);
+            return;
+        }
+
+        FB.login((response: any) => {
+            if (response.authResponse) {
+                FB.api('/me', { fields: 'name,email,picture.type(large)' }, (profileResponse: any) => {
+                    if (profileResponse && !profileResponse.error) {
+                        const { name, email, picture } = profileResponse;
+
+                        if (!email) {
+                            setError("Could not retrieve email from Facebook. Please ensure your Facebook account has a verified email.");
+                            setLoading(false);
+                            FB.logout();
+                            return;
+                        }
+                        
+                         const newUser: User = {
+                            id: `fb_${profileResponse.id}`,
+                            name,
+                            email,
+                            picture: picture?.data?.url,
+                            verified: true,
+                            reviewCount: 0,
+                            badges: [Badge.NewUser]
+                        };
+                        login(newUser, true);
+                        navigate('/');
+                    } else {
+                         setError(t('login.error.google'));
+                         setLoading(false);
+                    }
+                });
+            } else {
+                setError('Facebook registration was cancelled or failed.');
+                setLoading(false);
+            }
+        }, { scope: 'email,public_profile' });
+    };
 
     const handleEmailRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -149,8 +199,9 @@ const RegisterPage: React.FC = () => {
                     </div>
                 </div>
 
-                <div>
+                <div className="space-y-3">
                    <GoogleLoginButton onClick={() => { if(!loading) googleRegister() }} disabled={loading} text={t('login.google')} />
+                   <FacebookLoginButton onClick={handleFacebookRegister} disabled={loading} text={t('login.facebook')} />
                 </div>
 
                 <p className="text-sm text-center text-gray-600 dark:text-gray-400">

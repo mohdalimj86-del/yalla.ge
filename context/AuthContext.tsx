@@ -1,6 +1,15 @@
-
 import React, { createContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import { User } from '../types';
+
+// Declare FB SDK global object
+declare const FB: any;
+
+// Extend the window interface for the fbAsyncInit callback
+declare global {
+  interface Window {
+    fbAsyncInit: () => void;
+  }
+}
 
 // In a real app, this would be a secure backend. For this demo, we use localStorage.
 // WARNING: Storing user data and especially passwords in localStorage is insecure.
@@ -54,6 +63,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         console.error("Failed to parse user from session storage", error);
         sessionStorage.removeItem('user');
     }
+  }, []);
+
+  // Initialize Facebook SDK
+  useEffect(() => {
+    // In a real app, this App ID would come from environment variables.
+    // WARNING: Do not hardcode App IDs in production code.
+    const facebookAppId = "399033393043249"; // This is a placeholder.
+
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : facebookAppId,
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v19.0'
+      });
+    };
+
+    // Load the SDK script
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "https://connect.facebook.net/en_US/sdk.js";
+       if (fjs && fjs.parentNode) {
+        fjs.parentNode.insertBefore(js, fjs);
+       } else {
+        d.body.appendChild(js);
+       }
+     }(document, 'script', 'facebook-jssdk'));
   }, []);
   
    useEffect(() => {

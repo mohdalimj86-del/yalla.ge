@@ -7,6 +7,7 @@ interface ListingContextType {
   listings: Listing[];
   addListing: (newListing: Omit<Listing, 'id' | 'author' | 'reviews'>, authorName: string) => void;
   addReview: (listingId: number, reviewData: Omit<Review, 'id' | 'listingId'>) => void;
+  deleteListing: (listingId: number) => void;
 }
 
 export const ListingContext = createContext<ListingContextType | undefined>(undefined);
@@ -87,9 +88,21 @@ export const ListingProvider: React.FC<{ children: ReactNode }> = ({ children })
     });
   }, []);
 
+  const deleteListing = useCallback((listingId: number) => {
+    setListings(currentListings => {
+        const updatedListings = currentListings.filter(listing => listing.id !== listingId);
+        
+        // Update local storage for user-created listings
+        const userListings = updatedListings.filter(l => !mockListings.some(ml => ml.id === l.id));
+        localStorage.setItem(USER_LISTINGS_STORAGE_KEY, JSON.stringify(userListings));
+        
+        return updatedListings;
+    });
+  }, []);
+
 
   return (
-    <ListingContext.Provider value={{ listings, addListing, addReview }}>
+    <ListingContext.Provider value={{ listings, addListing, addReview, deleteListing }}>
       {children}
     </ListingContext.Provider>
   );
