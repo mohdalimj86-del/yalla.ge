@@ -13,6 +13,41 @@ export enum ListingCategory {
   Explore = 'Explore',
 }
 
+export enum Badge {
+  VerifiedReviewer = 'Verified Reviewer',
+  TopContributor = 'Top Contributor',
+  NewUser = 'New User',
+}
+
+export interface RatingDetails {
+  overall: number;
+  accuracy?: number;
+  communication?: number;
+  value?: number;
+  service?: number;
+}
+
+export interface Review {
+  id: number;
+  listingId: number;
+  authorId: string;
+  authorName: string;
+  authorAvatar?: string;
+  authorBadges?: Badge[];
+  rating: RatingDetails;
+  comment: string;
+  photos: string[]; // array of base64 image strings
+  createdAt: string; // ISO date string
+  helpfulVotes: number;
+  notHelpfulVotes: number;
+  reply?: {
+    authorName: string;
+    comment: string;
+    createdAt: string;
+  };
+}
+
+
 export interface Listing {
   id: number;
   category: ListingCategory;
@@ -24,6 +59,7 @@ export interface Listing {
   author: string;
   rating?: number;
   status?: 'approved' | 'pending';
+  reviews?: Review[];
 }
 
 export interface User {
@@ -35,4 +71,6 @@ export interface User {
   verified: boolean;
   verificationToken?: string;
   verificationTokenExpires?: number;
+  reviewCount?: number;
+  badges?: Badge[];
 }

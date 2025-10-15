@@ -1,4 +1,74 @@
-import { Listing, ListingCategory } from '../types';
+
+import { Listing, ListingCategory, Badge, Review } from '../types';
+
+export const mockReviews: { [key: number]: Review[] } = {
+  1: [
+    {
+      id: 101,
+      listingId: 1,
+      authorId: 'user1',
+      authorName: 'Alex D.',
+      authorAvatar: 'https://i.pravatar.cc/150?u=alex',
+      authorBadges: [Badge.VerifiedReviewer],
+      rating: { overall: 5, accuracy: 5, communication: 5, value: 5 },
+      comment: "Absolutely perfect for a student. The location is amazing, right next to the metro. Nino was a great host, very communicative. Highly recommend!",
+      photos: ["https://picsum.photos/seed/rev1/200/200", "https://picsum.photos/seed/rev2/200/200"],
+      createdAt: new Date('2023-09-15T10:00:00Z').toISOString(),
+      helpfulVotes: 12,
+      notHelpfulVotes: 0,
+    },
+    {
+      id: 102,
+      listingId: 1,
+      authorId: 'user2',
+      authorName: 'Sophie B.',
+      authorAvatar: 'https://i.pravatar.cc/150?u=sophie',
+      rating: { overall: 4, accuracy: 4, communication: 5, value: 4 },
+      comment: "Great place, a bit smaller than expected but very clean and has everything you need. The host is very responsive.",
+      photos: [],
+      createdAt: new Date('2023-10-01T14:30:00Z').toISOString(),
+      helpfulVotes: 5,
+      notHelpfulVotes: 1,
+    }
+  ],
+  4: [
+    {
+      id: 401,
+      listingId: 4,
+      authorId: 'user3',
+      authorName: 'Mike R.',
+      authorAvatar: 'https://i.pravatar.cc/150?u=mike',
+      authorBadges: [Badge.TopContributor],
+      rating: { overall: 5, value: 5, accuracy: 5 },
+      comment: "The MacBook was exactly as described. Met with Luka, very nice guy. The laptop works perfectly. Great value for the price!",
+      photos: [],
+      createdAt: new Date('2023-11-20T18:00:00Z').toISOString(),
+      helpfulVotes: 25,
+      notHelpfulVotes: 0,
+      reply: {
+        authorName: 'Luka T.',
+        comment: 'Thanks Mike! Glad you like it.',
+        createdAt: new Date('2023-11-21T09:00:00Z').toISOString(),
+      }
+    }
+  ],
+  7: [
+     {
+      id: 701,
+      listingId: 7,
+      authorId: 'user4',
+      authorName: 'Elena P.',
+      authorAvatar: 'https://i.pravatar.cc/150?u=elena',
+      authorBadges: [Badge.VerifiedReviewer],
+      rating: { overall: 5, service: 5, value: 4 },
+      comment: "Fabrika has an incredible vibe. A must-visit place in Tbilisi. So many cool spots to eat, drink, and just hang out. It can get a bit pricey, but the experience is worth it.",
+      photos: ["https://picsum.photos/seed/rev3/200/200"],
+      createdAt: new Date('2023-12-05T20:00:00Z').toISOString(),
+      helpfulVotes: 18,
+      notHelpfulVotes: 2,
+    }
+  ]
+};
 
 export const mockListings: Listing[] = [
   // Accommodation
@@ -11,6 +81,7 @@ export const mockListings: Listing[] = [
     imageUrl: "https://picsum.photos/seed/acc1/600/400",
     location: "Saburtalo, Tbilisi",
     author: "Nino K.",
+    reviews: mockReviews[1] || [],
   },
   {
     id: 2,
@@ -21,6 +92,7 @@ export const mockListings: Listing[] = [
     imageUrl: "https://picsum.photos/seed/acc2/600/400",
     location: "Vake, Tbilisi",
     author: "Mariam L.",
+    reviews: [],
   },
   {
     id: 3,
@@ -31,6 +103,7 @@ export const mockListings: Listing[] = [
     imageUrl: "https://picsum.photos/seed/acc3/600/400",
     location: "Gldani, Tbilisi",
     author: "Giorgi B.",
+    reviews: [],
   },
   // Marketplace
   {
@@ -42,6 +115,7 @@ export const mockListings: Listing[] = [
     imageUrl: "https://picsum.photos/seed/mkt1/600/400",
     location: "Tbilisi",
     author: "Luka T.",
+    reviews: mockReviews[4] || [],
   },
   {
     id: 5,
@@ -52,6 +126,7 @@ export const mockListings: Listing[] = [
     imageUrl: "https://picsum.photos/seed/mkt2/600/400",
     location: "Kutaisi",
     author: "Ana S.",
+    reviews: [],
   },
   {
     id: 6,
@@ -62,6 +137,7 @@ export const mockListings: Listing[] = [
     imageUrl: "https://picsum.photos/seed/mkt3/600/400",
     location: "Batumi",
     author: "Davit M.",
+    reviews: [],
   },
   // Explore
   {
@@ -73,6 +149,7 @@ export const mockListings: Listing[] = [
     imageUrl: "https://picsum.photos/seed/res1/600/400",
     location: "Marjanishvili, Tbilisi",
     author: "Admin",
+    reviews: mockReviews[7] || [],
   },
   {
     id: 8,
@@ -83,6 +160,7 @@ export const mockListings: Listing[] = [
     imageUrl: "https://picsum.photos/seed/res2/600/400",
     location: "Chavchavadze Ave, Tbilisi",
     author: "Admin",
+    reviews: [],
   },
   {
     id: 9,
@@ -93,5 +171,6 @@ export const mockListings: Listing[] = [
     imageUrl: "https://picsum.photos/seed/res3/600/400",
     location: "Kazbegi Ave, Tbilisi",
     author: "Admin",
+    reviews: [],
   },
 ];

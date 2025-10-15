@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useLocalization } from '../hooks/useLocalization';
-import { YallaIcon, MenuIcon, CloseIcon } from './icons';
+import { MenuIcon, CloseIcon } from './icons';
 import SettingsDropdown from './SettingsDropdown';
 import { LANGUAGE_OPTIONS } from '../constants';
 
@@ -74,6 +74,30 @@ const Header: React.FC = () => {
         </NavLink>
     );
 
+    const Logo: React.FC<{ size?: 'sm' | 'md' }> = ({ size = 'md' }) => {
+        const sizeClasses = {
+            md: {
+                wrapper: 'h-8 w-8',
+                letter: 'text-lg',
+                text: 'text-xl',
+            },
+            sm: {
+                wrapper: 'h-7 w-7',
+                letter: 'text-base',
+                text: 'text-lg',
+            }
+        };
+        const currentSize = sizeClasses[size];
+        return (
+             <div className="flex items-center gap-2">
+                <div className={`flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 ${currentSize.wrapper}`}>
+                    <span className={`text-white font-bold ${currentSize.letter}`}>Y</span>
+                </div>
+                <span className={`font-bold text-gray-800 dark:text-gray-200 ${currentSize.text}`}>Yalla.ge</span>
+            </div>
+        )
+    };
+
     return (
         <>
             <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm sticky top-0 z-30 border-b border-gray-200 dark:border-gray-700">
@@ -81,9 +105,8 @@ const Header: React.FC = () => {
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
                         <div className="flex-shrink-0">
-                            <Link to="/" className="flex items-center gap-2" onClick={closeAllMenus}>
-                                <YallaIcon className="h-7 w-auto text-sky-600" />
-                                <span className="font-bold text-xl text-gray-800 dark:text-gray-200">{t('app.title')}</span>
+                            <Link to="/" onClick={closeAllMenus}>
+                               <Logo />
                             </Link>
                         </div>
 
@@ -205,9 +228,8 @@ const Header: React.FC = () => {
                 >
                     {/* Drawer Header */}
                     <div className="flex items-center justify-between px-4 h-16 border-b border-gray-200 dark:border-gray-700">
-                        <Link to="/" className="flex items-center gap-2" onClick={closeAllMenus}>
-                            <YallaIcon className="h-6 w-auto text-sky-600" />
-                            <span className="font-bold text-lg text-gray-800 dark:text-gray-200">{t('app.title')}</span>
+                        <Link to="/" onClick={closeAllMenus}>
+                            <Logo size="sm"/>
                         </Link>
                         <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 -mr-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
                            <span className="sr-only">Close menu</span>

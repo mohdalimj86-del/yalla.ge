@@ -1,7 +1,25 @@
+
 import React, { useRef } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useLocalization } from '../hooks/useLocalization';
+import { Badge } from '../types';
+
+const BadgeDisplay: React.FC<{ badge: Badge }> = ({ badge }) => {
+    const { t } = useLocalization();
+    const badgeStyles: { [key in Badge]: { icon: string, color: string } } = {
+        [Badge.VerifiedReviewer]: { icon: 'fa-check-circle', color: 'text-blue-500' },
+        [Badge.TopContributor]: { icon: 'fa-award', color: 'text-amber-500' },
+        [Badge.NewUser]: { icon: 'fa-leaf', color: 'text-green-500' },
+    };
+
+    return (
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${badgeStyles[badge]?.color}`}>
+            <i className={`fas ${badgeStyles[badge]?.icon} mr-1.5`}></i>
+            {t(`badge.${badge.replace(/\s/g, '')}`)}
+        </span>
+    );
+};
 
 const ProfilePage: React.FC = () => {
   const { user, isAuthenticated, logout, updateUser } = useAuth();
@@ -67,6 +85,9 @@ const ProfilePage: React.FC = () => {
             <div className="text-center sm:text-left">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{user.name}</h2>
               <p className="text-md text-gray-500 dark:text-gray-400">{user.email}</p>
+              <div className="mt-2 flex gap-2 justify-center sm:justify-start">
+                  {user.badges?.map(badge => <BadgeDisplay key={badge} badge={badge} />)}
+              </div>
             </div>
           </div>
           <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-8">
@@ -79,6 +100,10 @@ const ProfilePage: React.FC = () => {
               <div>
                 <dt className="font-medium text-gray-500 dark:text-gray-400">{t('profile.email')}</dt>
                 <dd className="mt-1 text-gray-900 dark:text-white">{user.email}</dd>
+              </div>
+              <div>
+                <dt className="font-medium text-gray-500 dark:text-gray-400">{t('profile.reviews_written')}</dt>
+                <dd className="mt-1 text-gray-900 dark:text-white">{user.reviewCount || 0}</dd>
               </div>
               <div>
                 <dt className="font-medium text-gray-500 dark:text-gray-400">{t('profile.status')}</dt>

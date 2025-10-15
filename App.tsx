@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -24,6 +25,7 @@ import TermsOfServicePage from './pages/TermsOfServicePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import WelcomeAvatarModal from './components/WelcomeAvatarModal';
+import ListingDetailPage from './pages/ListingDetailPage';
 
 const AppContent: React.FC = () => {
   const { user, isNewUser, clearNewUserFlag } = useAuth();
@@ -53,6 +55,7 @@ const AppContent: React.FC = () => {
           <Route path="/accommodation" element={<AccommodationPage />} />
           <Route path="/marketplace" element={<MarketplacePage />} />
           <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/listing/:id" element={<ListingDetailPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/about" element={<AboutUsPage />} />

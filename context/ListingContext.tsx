@@ -1,11 +1,12 @@
+
 import React, { createContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { Listing } from '../types';
+import { Listing, Review } from '../types';
 import { mockListings } from '../data/mockData';
 
 interface ListingContextType {
   listings: Listing[];
-  // FIX: Updated function signature to accept authorName, matching the implementation and usage.
-  addListing: (newListing: Omit<Listing, 'id' | 'author'>, authorName: string) => void;
+  addListing: (newListing: Omit<Listing, 'id' | 'author' | 'reviews'>, authorName: string) => void;
+  addReview: (listingId: number, reviewData: Omit<Review, 'id' | 'listingId'>) => void;
 }
 
 export const ListingContext = createContext<ListingContextType | undefined>(undefined);
@@ -27,17 +28,16 @@ export const ListingProvider: React.FC<{ children: ReactNode }> = ({ children })
     }
   }, []);
 
-  // FIX: Corrected the type of `listingData` to Omit<Listing, 'id' | 'author'> to match the data passed from the form.
-  const addListing = useCallback((listingData: Omit<Listing, 'id' | 'author'>, authorName: string) => {
+  const addListing = useCallback((listingData: Omit<Listing, 'id' | 'author' | 'reviews'>, authorName: string) => {
     setListings(currentListings => {
       const newListing: Listing = {
         ...listingData,
         id: Date.now(), // Simple unique ID
         author: authorName,
+        reviews: [],
       };
       const updatedListings = [newListing, ...currentListings];
       
-      // Save only user-created listings to local storage
       const userListings = updatedListings.filter(l => !mockListings.some(ml => ml.id === l.id));
       localStorage.setItem(USER_LISTINGS_STORAGE_KEY, JSON.stringify(userListings));
 
@@ -45,9 +45,51 @@ export const ListingProvider: React.FC<{ children: ReactNode }> = ({ children })
     });
   }, []);
 
+  const addReview = useCallback((listingId: number, reviewData: Omit<Review, 'id' | 'listingId'>) => {
+    setListings(currentListings => {
+        const newReview: Review = {
+            ...reviewData,
+            id: Date.now(),
+            listingId: listingId,
+        };
+        
+        const updatedListings = currentListings.map(listing => {
+            if (listing.id === listingId) {
+                return {
+                    ...listing,
+                    reviews: [newReview, ...(listing.reviews || [])],
+                };
+            }
+            return listing;
+        });
+
+        // For user-created listings, we update local storage to persist the new review.
+        // For mock listings, the review is only kept in state and will reset on refresh.
+        try {
+            const storedUserListings = localStorage.getItem(USER_LISTINGS_STORAGE_KEY);
+            const userListings = storedUserListings ? JSON.parse(storedUserListings) : [];
+            const isUserListing = userListings.some((l: Listing) => l.id === listingId);
+
+            if (isUserListing) {
+                const updatedUserListings = userListings.map((l: Listing) => {
+                    if (l.id === listingId) {
+                        return { ...l, reviews: [newReview, ...(l.reviews || [])] };
+                    }
+                    return l;
+                });
+                localStorage.setItem(USER_LISTINGS_STORAGE_KEY, JSON.stringify(updatedUserListings));
+            }
+        } catch (error) {
+            console.error("Failed to update user listings in local storage", error);
+        }
+
+        return updatedListings;
+    });
+  }, []);
+
 
   return (
-    <ListingContext.Provider value={{ listings, addListing }}>
+    <ListingContext.Provider value={{ listings, addListing, addReview }}>
       {children}
     </ListingContext.Provider>
   );
