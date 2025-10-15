@@ -22,6 +22,11 @@ const RegisterPage: React.FC = () => {
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isHttps, setIsHttps] = useState(false);
+
+    useEffect(() => {
+        setIsHttps(window.location.protocol === 'https:');
+    }, []);
     
     useEffect(() => {
         if (isAuthenticated) {
@@ -75,6 +80,10 @@ const RegisterPage: React.FC = () => {
     });
 
     const handleFacebookRegister = () => {
+        if (!isHttps) {
+            setError("Facebook login requires a secure (HTTPS) connection.");
+            return;
+        }
         if (loading) return;
         setLoading(true);
         setError('');
@@ -201,7 +210,12 @@ const RegisterPage: React.FC = () => {
 
                 <div className="space-y-3">
                    <GoogleLoginButton onClick={() => { if(!loading) googleRegister() }} disabled={loading} text={t('login.google')} />
-                   <FacebookLoginButton onClick={handleFacebookRegister} disabled={loading} text={t('login.facebook')} />
+                   <FacebookLoginButton 
+                        onClick={handleFacebookRegister} 
+                        disabled={loading || !isHttps} 
+                        text={t('login.facebook')}
+                        title={!isHttps ? "Facebook login requires a secure (HTTPS) connection." : undefined}
+                    />
                 </div>
 
                 <p className="text-sm text-center text-gray-600 dark:text-gray-400">

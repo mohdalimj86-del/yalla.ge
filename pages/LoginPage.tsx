@@ -19,6 +19,11 @@ const LoginPage: React.FC = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isHttps, setIsHttps] = useState(false);
+
+    useEffect(() => {
+        setIsHttps(window.location.protocol === 'https:');
+    }, []);
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -78,6 +83,10 @@ const LoginPage: React.FC = () => {
     });
     
     const handleFacebookLogin = () => {
+        if (!isHttps) {
+            setError("Facebook login requires a secure (HTTPS) connection.");
+            return;
+        }
         if (loading) return;
         setLoading(true);
         setError('');
@@ -216,7 +225,12 @@ const LoginPage: React.FC = () => {
 
                 <div className="space-y-3">
                     <GoogleLoginButton onClick={() => { if(!loading) googleLogin() }} disabled={loading} text={t('login.google')} />
-                    <FacebookLoginButton onClick={handleFacebookLogin} disabled={loading} text={t('login.facebook')} />
+                    <FacebookLoginButton 
+                        onClick={handleFacebookLogin} 
+                        disabled={loading || !isHttps} 
+                        text={t('login.facebook')} 
+                        title={!isHttps ? "Facebook login requires a secure (HTTPS) connection." : undefined}
+                    />
                 </div>
 
                 <p className="text-sm text-center text-gray-600 dark:text-gray-400">

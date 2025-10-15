@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -44,7 +43,7 @@ const AppContent: React.FC = () => {
 
   const handleWelcomeModalClose = () => {
     if (user) {
-      localStorage.setItem(`welcome_shown_${user.id}`, 'true');
+      localStorage.setItem(welcome_shown_${user.id}, 'true');
     }
     setIsWelcomeModalOpen(false);
     clearNewUserFlag();
@@ -85,8 +84,8 @@ const AppContent: React.FC = () => {
 }
 
 const App: React.FC = () => {
-  // Hardcoded Google Client ID to ensure app functionality.
-  const googleClientId = "864330767091-5a20vlphhn5b7dm75rn81hkgboo4aeol.apps.googleusercontent.com";
+  // استخدم الـ Client ID الصحيح من Google Console
+  const googleClientId = "787924331613-3h8em13gcpmt95k3gpf9r1q9f8lgr63.apps.googleusercontent.com";
 
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
