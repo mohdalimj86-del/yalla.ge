@@ -1,18 +1,24 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useLocalization } from '../hooks/useLocalization';
+import { useNotifications } from '../hooks/useNotifications';
 import { MenuIcon, CloseIcon } from './icons';
 import SettingsDropdown from './SettingsDropdown';
+import NotificationsDropdown from './NotificationsDropdown';
 import { LANGUAGE_OPTIONS } from '../constants';
 
 const Header: React.FC = () => {
     const { isAuthenticated, user, logout } = useAuth();
     const { t, language, setLanguage } = useLocalization();
+    const { unreadCount } = useNotifications();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const profileMenuRef = useRef<HTMLDivElement>(null);
+    const notificationsRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
     const navLinks = [
@@ -21,11 +27,14 @@ const Header: React.FC = () => {
         { path: '/explore', label: t('nav.explore') },
     ];
 
-    // Close profile menu when clicking outside
+    // Close menus when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
                 setIsProfileMenuOpen(false);
+            }
+            if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+                setIsNotificationsOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -47,6 +56,7 @@ const Header: React.FC = () => {
     const closeAllMenus = () => {
         setIsMobileMenuOpen(false);
         setIsProfileMenuOpen(false);
+        setIsNotificationsOpen(false);
     }
     
     const handleSearchSubmit = (e: React.FormEvent) => {
@@ -142,54 +152,87 @@ const Header: React.FC = () => {
                                         </Link>
                                     </>
                                 ) : user ? (
-                                    <div className="relative" ref={profileMenuRef}>
-                                        <button onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)} className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
-                                            <img className="h-9 w-9 rounded-full object-cover" src={user.avatarUrl || user.picture || `https://ui-avatars.com/api/?name=${user.name}&background=random`} alt={user.name} />
-                                        </button>
-                                        {isProfileMenuOpen && (
-                                            <div className={`absolute ${language === 'ar' ? 'left-0' : 'right-0'} mt-2 w-64 bg-white dark:bg-gray-700 rounded-md shadow-lg z-20 overflow-hidden ring-1 ring-black ring-opacity-5`}>
-                                                <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-600">
-                                                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user.name}</p>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
-                                                </div>
-                                                <div className="py-1">
-                                                    <Link to="/profile" onClick={closeAllMenus} className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
-                                                        <i className="fas fa-user-circle fa-fw mr-2"></i>
-                                                        <span>{t('nav.profile')}</span>
-                                                    </Link>
-                                                </div>
-                                                
-                                                <div className="border-t border-gray-200 dark:border-gray-700">
-                                                    <div className="py-2 px-2">
-                                                        <div className="px-2 mb-1">
-                                                            <h4 className="text-xs font-semibold uppercase text-gray-400 dark:text-gray-500">Language</h4>
+                                    <>
+                                        <div className="relative" ref={notificationsRef}>
+                                            <button
+                                                onClick={() => {
+                                                    setIsNotificationsOpen(!isNotificationsOpen);
+                                                    setIsProfileMenuOpen(false);
+                                                }}
+                                                className="relative flex items-center justify-center w-10 h-10 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition-colors"
+                                                aria-haspopup="true"
+                                                aria-expanded={isNotificationsOpen}
+                                                title="Notifications"
+                                            >
+                                                <i className="fas fa-bell text-lg"></i>
+                                                {unreadCount > 0 && (
+                                                    <span className="absolute top-0 right-0 block h-5 w-5 transform translate-x-1/4 -translate-y-1/4">
+                                                        <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 animate-ping"></span>
+                                                        <span className="relative inline-flex items-center justify-center rounded-full h-5 w-5 bg-red-600 text-white text-xs font-bold">
+                                                            {unreadCount}
+                                                        </span>
+                                                    </span>
+                                                )}
+                                            </button>
+                                            {isNotificationsOpen && <NotificationsDropdown onClose={() => setIsNotificationsOpen(false)} />}
+                                        </div>
+
+                                        <div className="relative" ref={profileMenuRef}>
+                                            <button onClick={() => {
+                                                setIsProfileMenuOpen(!isProfileMenuOpen);
+                                                setIsNotificationsOpen(false);
+                                            }} className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+                                                <img className="h-9 w-9 rounded-full object-cover" src={user.avatarUrl || user.picture || `https://ui-avatars.com/api/?name=${user.name}&background=random`} alt={user.name} />
+                                            </button>
+                                            {isProfileMenuOpen && (
+                                                <div className={`absolute ${language === 'ar' ? 'left-0' : 'right-0'} mt-2 w-64 bg-white dark:bg-gray-700 rounded-md shadow-lg z-20 overflow-hidden ring-1 ring-black ring-opacity-5`}>
+                                                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-600">
+                                                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user.name}</p>
+                                                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                                                    </div>
+                                                    <div className="py-1">
+                                                        <Link to="/profile" onClick={closeAllMenus} className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+                                                            <i className="fas fa-user-circle fa-fw mr-2"></i>
+                                                            <span>{t('nav.profile')}</span>
+                                                        </Link>
+                                                        <Link to="/messages" onClick={closeAllMenus} className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+                                                            <i className="fas fa-comments fa-fw mr-2"></i>
+                                                            <span>Messages</span>
+                                                        </Link>
+                                                    </div>
+                                                    
+                                                    <div className="border-t border-gray-200 dark:border-gray-700">
+                                                        <div className="py-2 px-2">
+                                                            <div className="px-2 mb-1">
+                                                                <h4 className="text-xs font-semibold uppercase text-gray-400 dark:text-gray-500">Language</h4>
+                                                            </div>
+                                                            {LANGUAGE_OPTIONS.map(option => (
+                                                                <button
+                                                                    key={option.code}
+                                                                    onClick={() => { setLanguage(option.code); setIsProfileMenuOpen(false); }}
+                                                                    className={`w-full text-left flex items-center px-2 py-1.5 text-sm rounded-md transition-colors ${
+                                                                        language === option.code
+                                                                        ? 'bg-sky-50 text-sky-700 dark:bg-sky-800/50 dark:text-sky-200'
+                                                                        : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                                                    }`}
+                                                                >
+                                                                    <span className="mr-3 text-lg w-6 text-center">{option.flag}</span>
+                                                                    <span>{option.name}</span>
+                                                                </button>
+                                                            ))}
                                                         </div>
-                                                        {LANGUAGE_OPTIONS.map(option => (
-                                                            <button
-                                                                key={option.code}
-                                                                onClick={() => { setLanguage(option.code); setIsProfileMenuOpen(false); }}
-                                                                className={`w-full text-left flex items-center px-2 py-1.5 text-sm rounded-md transition-colors ${
-                                                                    language === option.code
-                                                                    ? 'bg-sky-50 text-sky-700 dark:bg-sky-800/50 dark:text-sky-200'
-                                                                    : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                                                }`}
-                                                            >
-                                                                <span className="mr-3 text-lg w-6 text-center">{option.flag}</span>
-                                                                <span>{option.name}</span>
-                                                            </button>
-                                                        ))}
+                                                    </div>
+
+                                                    <div className="border-t border-gray-200 dark:border-gray-700 py-1">
+                                                        <button onClick={() => { logout(); closeAllMenus(); }} className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-600">
+                                                            <i className="fas fa-sign-out-alt fa-fw mr-2"></i>
+                                                            <span>{t('nav.logout')}</span>
+                                                        </button>
                                                     </div>
                                                 </div>
-
-                                                <div className="border-t border-gray-200 dark:border-gray-700 py-1">
-                                                    <button onClick={() => { logout(); closeAllMenus(); }} className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-600">
-                                                        <i className="fas fa-sign-out-alt fa-fw mr-2"></i>
-                                                        <span>{t('nav.logout')}</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
+                                            )}
+                                        </div>
+                                    </>
                                 ) : null}
                            </div>
 

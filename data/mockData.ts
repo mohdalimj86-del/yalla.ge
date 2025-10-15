@@ -1,5 +1,4 @@
-
-import { Listing, ListingCategory, Badge, Review } from '../types';
+import { Listing, ListingCategory, Badge, Review, Notification, NotificationType, User, Conversation, Message } from '../types';
 
 export const mockReviews: { [key: number]: Review[] } = {
   1: [
@@ -173,4 +172,69 @@ export const mockListings: Listing[] = [
     author: "Admin",
     reviews: [],
   },
+];
+
+
+export const mockNotifications: Notification[] = [
+  {
+    id: 'notif1',
+    type: NotificationType.NewReview,
+    message: 'Alex D. left a 5-star review on your listing "Cozy Studio in Saburtalo".',
+    read: false,
+    createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 minutes ago
+    link: '/listing/1',
+  },
+  {
+    id: 'notif2',
+    type: NotificationType.ListingApproved,
+    message: 'Congratulations! Your listing "IKEA Study Desk" has been approved and is now public.',
+    read: false,
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+    link: '/listing/5',
+  },
+  {
+    id: 'notif3',
+    type: NotificationType.NewMessage,
+    message: 'You have a new message from Sophie B. regarding your ad.',
+    read: true,
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
+    link: '/messages/convo2',
+  },
+  {
+    id: 'notif4',
+    type: NotificationType.System,
+    message: 'Welcome to Yalla.ge! We are happy to have you on board.',
+    read: true,
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), // 2 days ago
+  },
+];
+
+
+// Mock data for Messaging System
+export const mockUsers: { [id: string]: Omit<User, 'email' | 'verified'> } = {
+  'user1': { id: 'user1', name: 'Nino K.', picture: 'https://i.pravatar.cc/150?u=nino' },
+  'user2': { id: 'user2', name: 'Sophie B.', picture: 'https://i.pravatar.cc/150?u=sophie' },
+  'user3': { id: 'user3', name: 'Luka T.', picture: 'https://i.pravatar.cc/150?u=luka' },
+};
+
+export const mockMessages: { [conversationId: string]: Message[] } = {
+  'convo1': [
+    { id: 'msg1', conversationId: 'convo1', senderId: 'user1', text: 'Hi there! Is your studio still available?', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), read: true },
+    { id: 'msg2', conversationId: 'convo1', senderId: 'currentUser', text: 'Hey Nino! Yes, it is. Are you interested?', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 1).toISOString(), read: true },
+  ],
+  'convo2': [
+    { id: 'msg3', conversationId: 'convo2', senderId: 'user2', text: 'Hello! I saw your review on the Saburtalo studio. Was it noisy?', createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), read: true },
+    { id: 'msg4', conversationId: 'convo2', senderId: 'currentUser', text: 'Hi Sophie. Not at all, it was quite peaceful actually.', createdAt: new Date(Date.now() - 1000 * 60 * 28).toISOString(), read: true },
+    { id: 'msg5', conversationId: 'convo2', senderId: 'user2', text: 'Great, thanks for the info!', createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(), read: false },
+  ],
+  'convo3': [
+     { id: 'msg6', conversationId: 'convo3', senderId: 'user3', text: 'Is the price for the MacBook negotiable?', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(), read: true },
+  ]
+};
+
+
+export const mockConversations: Conversation[] = [
+  { id: 'convo1', participantIds: ['currentUser', 'user1'], lastMessage: mockMessages['convo1'][1], unreadCount: 0 },
+  { id: 'convo2', participantIds: ['currentUser', 'user2'], lastMessage: mockMessages['convo2'][2], unreadCount: 1 },
+  { id: 'convo3', participantIds: ['currentUser', 'user3'], lastMessage: mockMessages['convo3'][0], unreadCount: 0 },
 ];

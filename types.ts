@@ -1,4 +1,3 @@
-
 export enum Language {
   EN = 'en',
   AR = 'ar',
@@ -73,4 +72,37 @@ export interface User {
   verificationTokenExpires?: number;
   reviewCount?: number;
   badges?: Badge[];
+}
+
+export enum NotificationType {
+  NewReview = 'NewReview',
+  ListingApproved = 'ListingApproved',
+  PriceChange = 'PriceChange',
+  NewMessage = 'NewMessage',
+  System = 'System',
+}
+
+export interface Notification {
+  id: string;
+  type: NotificationType;
+  message: string;
+  read: boolean;
+  createdAt: string; // ISO date string
+  link?: string; // e.g., /listing/1
+}
+
+export interface Message {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  text: string;
+  createdAt: string; // ISO date string
+  read: boolean;
+}
+
+export interface Conversation {
+  id: string;
+  participantIds: string[];
+  lastMessage?: Message;
+  unreadCount?: number;
 }

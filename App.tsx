@@ -7,6 +7,8 @@ import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import { ThemeProvider } from './context/ThemeContext';
 import { ListingProvider } from './context/ListingContext';
+import { NotificationProvider } from './context/NotificationContext';
+import { MessageProvider } from './context/MessageContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -26,6 +28,8 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import WelcomeAvatarModal from './components/WelcomeAvatarModal';
 import ListingDetailPage from './pages/ListingDetailPage';
+import NotificationsPage from './pages/NotificationsPage';
+import MessagesPage from './pages/MessagesPage';
 
 const AppContent: React.FC = () => {
   const { user, isNewUser, clearNewUserFlag } = useAuth();
@@ -65,6 +69,9 @@ const AppContent: React.FC = () => {
           <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/add-listing/:category" element={<AddListingPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/messages" element={<MessagesPage />} />
+          <Route path="/messages/:conversationId" element={<MessagesPage />} />
           <Route path="/404" element={<NotFoundPage />} />
           <Route path="*" element={<Navigate to="/404" />} />
         </Routes>
@@ -85,9 +92,13 @@ const App: React.FC = () => {
         <AuthProvider>
           <LocalizationProvider>
             <ListingProvider>
-              <HashRouter>
-                <AppContent />
-              </HashRouter>
+              <NotificationProvider>
+                <MessageProvider>
+                  <HashRouter>
+                    <AppContent />
+                  </HashRouter>
+                </MessageProvider>
+              </NotificationProvider>
             </ListingProvider>
           </LocalizationProvider>
         </AuthProvider>
