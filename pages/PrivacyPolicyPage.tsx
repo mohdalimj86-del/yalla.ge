@@ -82,7 +82,7 @@ const PrivacyPolicyPage: React.FC = () => {
                         </div>
                          <div className="text-gray-700 dark:text-gray-300">
                              <span className="font-semibold">{t('privacy.contact.website')}:</span>
-                             <a href="https://www.yallaa.ge" target="_blank" rel="noopener noreferrer" className="ml-2 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">www.yallaa.ge</a>
+                             <a href="https://www.yalla.ge" target="_blank" rel="noopener noreferrer" className="ml-2 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">www.yalla.ge</a>
                         </div>
                     </Section>
                 </div>

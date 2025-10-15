@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { useGoogleLogin, TokenResponse } from '@react-oauth/google';
 import { useNavigate, Link } from 'react-router-dom';
@@ -143,7 +145,7 @@ const RegisterPage: React.FC = () => {
             return;
         }
         if (!agreedToTerms) {
-            setError('You must agree to the terms and conditions.');
+            setError(t('signup.error.terms_required'));
             return;
         }
 
@@ -169,23 +171,23 @@ const RegisterPage: React.FC = () => {
                 <form onSubmit={handleEmailRegister} className="space-y-4">
                      <div>
                         <label htmlFor="name" className="sr-only">{t('signup.field.name')}</label>
-                        <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder={t('signup.field.name')} className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600" />
+                        <input id="name" type="text" value={name} onChange={(e) => { setName(e.target.value); if(error) setError(''); }} required placeholder={t('signup.field.name')} className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600" />
                     </div>
                      <div>
                         <label htmlFor="email-register" className="sr-only">{t('login.field.email')}</label>
-                        <input id="email-register" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder={t('login.field.email')} className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600" />
+                        <input id="email-register" type="email" value={email} onChange={(e) => { setEmail(e.target.value); if(error) setError(''); }} required placeholder={t('login.field.email')} className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600" />
                     </div>
                      <div>
                         <label htmlFor="password-register" className="sr-only">{t('login.field.password')}</label>
-                        <input id="password-register" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder={t('login.field.password')} className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600" />
+                        <input id="password-register" type="password" value={password} onChange={(e) => { setPassword(e.target.value); if(error) setError(''); }} required placeholder={t('login.field.password')} className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600" />
                     </div>
                      <div>
                         <label htmlFor="confirm-password" className="sr-only">{t('signup.field.confirm_password')}</label>
-                        <input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required placeholder={t('signup.field.confirm_password')} className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600" />
+                        <input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => { setConfirmPassword(e.target.value); if(error) setError(''); }} required placeholder={t('signup.field.confirm_password')} className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600" />
                     </div>
                      <div className="flex items-start">
                         <div className="flex items-center h-5">
-                            <input id="terms" name="terms" type="checkbox" checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} className="focus:ring-sky-500 h-4 w-4 text-sky-600 border-gray-300 rounded" />
+                            <input id="terms" name="terms" type="checkbox" checked={agreedToTerms} onChange={(e) => { setAgreedToTerms(e.target.checked); if(error) setError(''); }} className="focus:ring-sky-500 h-4 w-4 text-sky-600 border-gray-300 rounded" />
                         </div>
                         <div className="ml-3 text-sm">
                             <label htmlFor="terms" className="font-medium text-gray-700 dark:text-gray-300">I agree to the <Link to="/terms" className="text-sky-600 hover:underline">Terms</Link> and <Link to="/privacy" className="text-sky-600 hover:underline">Privacy Policy</Link></label>

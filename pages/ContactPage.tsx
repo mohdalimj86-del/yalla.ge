@@ -24,8 +24,8 @@ const ContactPage: React.FC = () => {
             title: t('contact.social.title'),
             icon: 'fas fa-share-alt',
             details: [
-                { type: t('contact.facebook'), value: 'Yallaa.ge', href: 'https://www.facebook.com/Yallaa.ge', icon: 'fab fa-facebook-square' },
-                { type: t('contact.instagram'), value: '@yallaa.ge', href: 'https://www.instagram.com/yallaa.ge', icon: 'fab fa-instagram-square' },
+                { type: t('contact.facebook'), value: 'Yalla.ge', href: 'https://www.facebook.com/Yalla.ge', icon: 'fab fa-facebook-square' },
+                { type: t('contact.instagram'), value: '@yalla.ge', href: 'https://www.instagram.com/yalla.ge', icon: 'fab fa-instagram-square' },
             ]
         }
     ];

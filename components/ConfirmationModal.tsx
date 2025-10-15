@@ -1,5 +1,6 @@
 
 import React, { useEffect, useRef } from 'react';
+import { useLocalization } from '../hooks/useLocalization';
 
 interface ConfirmationModalProps {
     isOpen: boolean;
@@ -11,6 +12,7 @@ interface ConfirmationModalProps {
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, onConfirm, title, message }) => {
     const modalRef = useRef<HTMLDivElement>(null);
+    const { t } = useLocalization();
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -68,14 +70,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
                             onClose();
                         }}
                     >
-                        Delete
+                        {t('delete.listing.button.delete')}
                     </button>
                     <button
                         type="button"
                         className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-500 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 sm:mt-0 sm:w-auto sm:text-sm"
                         onClick={onClose}
                     >
-                        Cancel
+                        {t('delete.listing.button.cancel')}
                     </button>
                 </div>
             </div>

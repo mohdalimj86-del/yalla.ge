@@ -1,4 +1,5 @@
 
+
 import React, { useMemo, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useListings } from '../hooks/useListings';
@@ -19,16 +20,16 @@ const ReviewForm: React.FC<{ listing: Listing }> = ({ listing }) => {
     const [comment, setComment] = useState('');
     const [photos, setPhotos] = useState<string[]>([]);
     const [error, setError] = useState('');
+    const [photoError, setPhotoError] = useState('');
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(event.target.files || []);
         if (photos.length + files.length > 4) {
-            alert('You can upload a maximum of 4 photos.');
+            setPhotoError(t('review.form.error.max_photos'));
             return;
         }
+        setPhotoError('');
         files.forEach(file => {
-            // FIX: Add a type guard to ensure `file` is a Blob before passing to readAsDataURL.
-            // This resolves an issue where TypeScript was not correctly inferring the type from the FileList.
             if (file instanceof Blob) {
                 const reader = new FileReader();
                 reader.onload = () => {
@@ -65,6 +66,7 @@ const ReviewForm: React.FC<{ listing: Listing }> = ({ listing }) => {
             setComment('');
             setPhotos([]);
             setError('');
+            setPhotoError('');
         }
     };
     
@@ -112,6 +114,7 @@ const ReviewForm: React.FC<{ listing: Listing }> = ({ listing }) => {
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('review.form.add_photos')} (Max 4)</label>
                     <input type="file" multiple onChange={handleFileChange} accept="image/*" className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 dark:file:bg-sky-900/50 dark:file:text-sky-300 dark:hover:file:bg-sky-900" />
+                    {photoError && <p className="text-sm text-red-500 mt-1">{photoError}</p>}
                     <div className="mt-2 flex space-x-2">
                         {photos.map((photo, index) => (
                             <img key={index} src={photo} className="h-16 w-16 object-cover rounded" alt="upload preview"/>

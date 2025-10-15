@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useGoogleLogin, TokenResponse } from '@react-oauth/google';
 import { useNavigate, Link } from 'react-router-dom';
@@ -178,7 +179,10 @@ const LoginPage: React.FC = () => {
                             autoComplete="email"
                             required
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                if (error) setError('');
+                            }}
                             placeholder={t('login.field.email')}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                         />
@@ -192,7 +196,10 @@ const LoginPage: React.FC = () => {
                             autoComplete="current-password"
                             required
                              value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => {
+                                setPassword(e.target.value);
+                                if (error) setError('');
+                            }}
                             placeholder={t('login.field.password')}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                         />

@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -47,9 +46,8 @@ const ProfilePage: React.FC = () => {
       const reader = new FileReader();
       reader.onload = () => {
         const newAvatarUrl = reader.result as string;
-        // Persist in local storage
-        localStorage.setItem(`avatar_${user.id}`, newAvatarUrl);
-        // Update auth context
+        // The updateUser function from AuthContext handles updating the user state
+        // and persisting it to both session and local storage.
         updateUser({ avatarUrl: newAvatarUrl });
       };
       reader.readAsDataURL(file);

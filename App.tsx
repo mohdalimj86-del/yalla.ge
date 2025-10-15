@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -31,6 +32,16 @@ import ListingDetailPage from './pages/ListingDetailPage';
 import NotificationsPage from './pages/NotificationsPage';
 import MessagesPage from './pages/MessagesPage';
 
+// Declare FB SDK global object
+declare const FB: any;
+
+// Extend the window interface for the fbAsyncInit callback
+declare global {
+  interface Window {
+    fbAsyncInit: () => void;
+  }
+}
+
 const AppContent: React.FC = () => {
   const { user, isNewUser, clearNewUserFlag } = useAuth();
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(false);
@@ -43,7 +54,7 @@ const AppContent: React.FC = () => {
 
   const handleWelcomeModalClose = () => {
     if (user) {
-      localStorage.setItem(welcome_shown_${user.id}, 'true');
+      localStorage.setItem(`welcome_shown_${user.id}`, 'true');
     }
     setIsWelcomeModalOpen(false);
     clearNewUserFlag();
@@ -84,8 +95,37 @@ const AppContent: React.FC = () => {
 }
 
 const App: React.FC = () => {
-  // استخدم الـ Client ID الصحيح من Google Console
-  const googleClientId = "787924331613-3h8em13gcpmt95k3gpf9r1q9f8lgr63.apps.googleusercontent.com";
+  // The Google Client ID for OAuth.
+  const googleClientId = "787924331613-3h8em13gcpmlt95k3gpf9r1q9f8lgr63.apps.googleusercontent.com";
+
+  // Initialize Facebook SDK
+  useEffect(() => {
+    // In a real app, this App ID would come from environment variables.
+    // WARNING: Do not hardcode App IDs in production code.
+    const facebookAppId = "399033393043249"; // This is a placeholder.
+
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : facebookAppId,
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v19.0'
+      });
+    };
+
+    // Load the SDK script
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "https://connect.facebook.net/en_US/sdk.js";
+       if (fjs && fjs.parentNode) {
+        fjs.parentNode.insertBefore(js, fjs);
+       } else {
+        d.body.appendChild(js);
+       }
+     }(document, 'script', 'facebook-jssdk'));
+  }, []);
 
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
