@@ -1,7 +1,6 @@
 
 import { Language } from './types';
 
-// FIX: Define and export LANGUAGE_OPTIONS for use in the LanguageSwitcher component.
 export const LANGUAGE_OPTIONS = [
   { code: Language.EN, name: 'English', flag: '🇬🇧' },
   { code: Language.AR, name: 'العربية', flag: '🇸🇦' },
