@@ -16,6 +16,7 @@ import AccommodationPage from './pages/AccommodationPage';
 import MarketplacePage from './pages/MarketplacePage';
 import ExplorePage from './pages/ExplorePage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import NotFoundPage from './pages/NotFoundPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
@@ -61,6 +62,7 @@ const AppContent: React.FC = () => {
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/listing/:id" element={<ListingDetailPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/about" element={<AboutUsPage />} />
           <Route path="/contact" element={<ContactPage />} />
