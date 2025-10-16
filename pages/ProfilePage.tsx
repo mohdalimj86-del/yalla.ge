@@ -94,20 +94,20 @@ const ProfilePage: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('profile.details')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
                 <div>
-                  <dt className="font-medium text-gray-500 dark:text-gray-400">{t('profile.name')}</dt>
-                  <dd className="mt-1 text-gray-900 dark:text-white">{user.name}</dd>
+                  <p className="font-medium text-gray-500 dark:text-gray-400">{t('profile.name')}</p>
+                  <p className="mt-1 text-gray-900 dark:text-white">{user.name}</p>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-500 dark:text-gray-400">{t('profile.email')}</dt>
-                  <dd className="mt-1 text-gray-900 dark:text-white">{user.email}</dd>
+                  <p className="font-medium text-gray-500 dark:text-gray-400">{t('profile.email')}</p>
+                  <p className="mt-1 text-gray-900 dark:text-white">{user.email}</p>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-500 dark:text-gray-400">{t('profile.reviews_written')}</dt>
-                  <dd className="mt-1 text-gray-900 dark:text-white">{user.reviewCount || 0}</dd>
+                  <p className="font-medium text-gray-500 dark:text-gray-400">{t('profile.reviews_written')}</p>
+                  <p className="mt-1 text-gray-900 dark:text-white">{user.reviewCount || 0}</p>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-500 dark:text-gray-400">{t('profile.status')}</dt>
-                  <dd className="mt-1">
+                  <p className="font-medium text-gray-500 dark:text-gray-400">{t('profile.status')}</p>
+                  <div className="mt-1">
                     {user.verified ? (
                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                           <i className="fas fa-check-circle mr-1"></i>
@@ -119,7 +119,7 @@ const ProfilePage: React.FC = () => {
                           {t('profile.verification_pending')}
                       </span>
                     )}
-                  </dd>
+                  </div>
                 </div>
               </div>
             </div>
